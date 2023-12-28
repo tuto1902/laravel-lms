@@ -9,7 +9,9 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class ShowCourse extends Component implements HasInfolists, HasForms
@@ -31,15 +33,51 @@ class ShowCourse extends Component implements HasInfolists, HasForms
             ->schema([
                 Infolists\Components\Section::make()
                     ->schema([
-                        Infolists\Components\TextEntry::make('title'),
-                        Infolists\Components\TextEntry::make('tagline'),
-                        Infolists\Components\TextEntry::make('description'),
-                        Infolists\Components\TextEntry::make('instructor.name'),
-                        Infolists\Components\TextEntry::make('episodes_count')
+                        Infolists\Components\TextEntry::make('title')
                             ->label('')
-                            ->formatStateUsing(fn ($state) => "$state episodes"),
-                        Infolists\Components\TextEntry::make('created_at')
-                            ->date('M d, Y')
+                            ->size('text-4xl')
+                            ->weight('font-bold')
+                            ->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('tagline')
+                            ->label('')
+                            ->columnSpanFull(),
+                        Infolists\Components\TextEntry::make('instructor.name')
+                            ->label('Your teacher')
+                            ->columnSpanFull(),
+                        Infolists\Components\Fieldset::make('')
+                            ->columns(3)
+                            ->columnSpan(1)
+                            ->schema([
+                                Infolists\Components\TextEntry::make('episodes_count')
+                                    ->label('')
+                                    ->formatStateUsing(fn ($state) => "$state episodes")
+                                    ->icon('heroicon-o-film'),
+                                Infolists\Components\TextEntry::make('formatted_length')
+                                    ->label('')
+                                    ->icon('heroicon-o-clock'),
+                                Infolists\Components\TextEntry::make('created_at')
+                                    ->label('')
+                                    //->date('M d, Y')
+                                    ->formatStateUsing(fn ($state) => $state->diffForHumans())
+                                    ->icon('heroicon-o-calendar'),
+                            ])
+                            ->extraAttributes(['class' => 'border-none !p-0']),
+                    ])
+                    ->columns(2),
+                Infolists\Components\Section::make('About this course')
+                    ->description(fn (Course $record) => $record->description)
+                    ->aside()
+                    ->schema([
+                        Infolists\Components\RepeatableEntry::make('episodes')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('title')
+                                    ->label('')
+                                    ->icon('heroicon-o-play-circle'),
+                                Infolists\Components\TextEntry::make('formatted_length')
+                                    ->label('')
+                                    ->icon('heroicon-o-clock'),
+                            ])
+                            ->columns(2),
                     ])
             ]);
     }
