@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 use Livewire\Livewire;
 
 it('renders successfully', function () {
-    Livewire::test(ShowCourse::class)
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory()->state(['length_in_minutes' => 10])->count(10), 'episodes')
+        ->create();
+    
+    Livewire::test(ShowCourse::class, ['course' => $course])
         ->assertStatus(200);
 });
 
