@@ -37,3 +37,26 @@ it('has the episodes count', function () {
 
     expect($course->episodes_count)->toBe(10);
 });
+
+it('has the course length', function () {
+    $courseA = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory()->state(['length_in_minutes' => 150]), 'episodes')
+        ->create();
+
+    $courseB = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory()->state(['length_in_minutes' => 61]), 'episodes')
+        ->create();
+
+    $courseC = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->create();
+
+    expect($courseA->formatted_length)
+        ->toBe('2 hrs 30 mins');
+    expect($courseB->formatted_length)
+        ->toBe('1 hr 1 min');
+    expect($courseC->formatted_length)
+        ->toBe('0 mins');
+});
