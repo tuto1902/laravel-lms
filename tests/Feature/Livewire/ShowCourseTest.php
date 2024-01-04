@@ -31,7 +31,7 @@ it('shows course details', function () {
         ->assertSeeText($course->tagline)
         ->assertSeeText($course->description)
         ->assertSeeText($course->instructor->name)
-        ->assertSeeText($course->created_at->format('M d, Y'))
+        ->assertSeeText($course->created_at->diffForHumans())
         ->assertSeeText($course->episodes_count . ' episodes')
         ->assertSeeText($course->formatted_length);
 });
