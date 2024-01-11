@@ -43,3 +43,38 @@ it('shows the provided episode', function () {
         ->assertOk()
         ->assertSeeText('Second episode overview');
 });
+
+it('shows the list of episodes', function() {
+    // Arrange
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(
+            Episode::factory()
+                ->count(3)
+                ->state(new Sequence(
+                    ['title' => 'First Episode'],
+                    ['title' => 'Second Episode'],
+                    ['title' => 'Third Episode'],
+                ))
+        )
+        ->create();
+
+    Livewire::test(WatchEpisode::class, ['course' => $course])
+        ->assertOk()
+        ->assertSeeInOrder([
+            'First Episode',
+            'Second Episode',
+            'Third Episode'
+        ]);
+});
+
+it('shows the video player', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
+        ->create();
+
+    Livewire::test(WatchEpisode::class, ['course' => $course])
+        ->assertOk()
+        ->assertSee('<iframe src="https://player.vimeo.com/video/123456789"', false);
+});

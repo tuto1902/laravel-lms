@@ -1,3 +1,3 @@
 <div>
-    <p>{{ $currentEpisode->overview }}</p>
+    {{ $this->episodeInfolist }}
 </div>
