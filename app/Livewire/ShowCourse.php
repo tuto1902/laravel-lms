@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Course;
+use App\Models\Episode;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
@@ -34,12 +35,12 @@ class ShowCourse extends Component implements HasInfolists, HasForms
                 Infolists\Components\Section::make()
                     ->schema([
                         Infolists\Components\TextEntry::make('title')
-                            ->label('')
+                            ->hiddenLabel()
                             ->size('text-4xl')
                             ->weight('font-bold')
                             ->columnSpanFull(),
                         Infolists\Components\TextEntry::make('tagline')
-                            ->label('')
+                            ->hiddenLabel()
                             ->columnSpanFull(),
                         Infolists\Components\TextEntry::make('instructor.name')
                             ->label('Your teacher')
@@ -49,14 +50,14 @@ class ShowCourse extends Component implements HasInfolists, HasForms
                             ->columnSpan(1)
                             ->schema([
                                 Infolists\Components\TextEntry::make('episodes_count')
-                                    ->label('')
+                                    ->hiddenLabel()
                                     ->formatStateUsing(fn ($state) => "$state episodes")
                                     ->icon('heroicon-o-film'),
                                 Infolists\Components\TextEntry::make('formatted_length')
-                                    ->label('')
+                                    ->hiddenLabel()
                                     ->icon('heroicon-o-clock'),
                                 Infolists\Components\TextEntry::make('created_at')
-                                    ->label('')
+                                    ->hiddenLabel()
                                     //->date('M d, Y')
                                     ->formatStateUsing(fn ($state) => $state->diffForHumans())
                                     ->icon('heroicon-o-calendar'),
@@ -65,16 +66,18 @@ class ShowCourse extends Component implements HasInfolists, HasForms
                     ])
                     ->columns(2),
                 Infolists\Components\Section::make('About this course')
-                    ->description(fn (Course $record) => $record->description)
-                    ->aside()
+                    ->columns(3)
                     ->schema([
+                        Infolists\Components\TextEntry::make('description')
+                            ->columnSpan(2),
                         Infolists\Components\RepeatableEntry::make('episodes')
                             ->schema([
                                 Infolists\Components\TextEntry::make('title')
-                                    ->label('')
-                                    ->icon('heroicon-o-play-circle'),
+                                    ->hiddenLabel()
+                                    ->icon('heroicon-o-play-circle')
+                                    ->url(fn (Episode $record) => route('courses.episodes.show', ['course' => $record->course->getRouteKey(), 'episode' => $record->getRouteKey()])),
                                 Infolists\Components\TextEntry::make('formatted_length')
-                                    ->label('')
+                                    ->hiddenLabel()
                                     ->icon('heroicon-o-clock'),
                             ])
                             ->columns(2),

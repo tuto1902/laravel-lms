@@ -35,11 +35,22 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
     {
         return $infolist
             ->record($this->currentEpisode)
+            ->columns(3)
             ->schema([
-                VideoPlayerEntry::make('vimeo_id')
-                    ->hiddenLabel(),
-                Infolists\Components\TextEntry::make('overview'),
+                Infolists\Components\Section::make([
+                    Infolists\Components\TextEntry::make('title')
+                        ->hiddenLabel()
+                        ->size('text-4xl')
+                        ->weight('font-bold')
+                        ->columnSpan(2),
+                    VideoPlayerEntry::make('vimeo_id')
+                        ->hiddenLabel()
+                        ->columnSpan(2),
+                    Infolists\Components\TextEntry::make('overview')
+                        ->columnSpan(2),
+                ])->columnSpan(2),
                 Infolists\Components\RepeatableEntry::make('course.episodes')
+                    ->hiddenLabel()
                     ->schema([
                         Infolists\Components\TextEntry::make('title')
                             ->hiddenLabel()
