@@ -12,6 +12,7 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
 use Filament\Infolists;
 use Livewire\Component;
+use Livewire\Attributes\On;
 
 class WatchEpisode extends Component implements HasInfolists, HasForms
 {
@@ -54,7 +55,9 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
                     ->schema([
                         Infolists\Components\TextEntry::make('title')
                             ->hiddenLabel()
-                            ->icon('heroicon-o-play-circle'),
+                            ->icon(fn (Episode $record) => $record->id == $this->currentEpisode->id ? 'heroicon-s-play-circle' : 'heroicon-o-play-circle')
+                            ->iconColor(fn (Episode $record) => $record->id == $this->currentEpisode->id ? 'success' : 'gray')
+                            ->weight(fn (Episode $record) => $record->id == $this->currentEpisode->id ? 'font-bold' : 'font-base'),
                         Infolists\Components\TextEntry::make('formatted_length')
                             ->hiddenLabel()
                             ->icon('heroicon-o-clock'),
@@ -66,5 +69,11 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
     public function render()
     {
         return view('livewire.watch-episode');
+    }
+
+    #[On('episode-ended')]
+    public function onEpisodeEnded(Episode $episode)
+    {
+        dd('move to next episode...', $episode);
     }
 }
