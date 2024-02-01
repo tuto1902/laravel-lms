@@ -23,6 +23,8 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
 
     public function mount(Course $course, Episode $episode)
     {
+        $this->authorize('view', $course);
+        
         $this->course = $course;
         
         if (isset($episode->id)) {
@@ -74,6 +76,6 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
     #[On('episode-ended')]
     public function onEpisodeEnded(Episode $episode)
     {
-        dd('move to next episode...', $episode);
+        $this->currentEpisode = Episode::firstWhere('sort', $episode->sort + 1) ?: $episode;
     }
 }
