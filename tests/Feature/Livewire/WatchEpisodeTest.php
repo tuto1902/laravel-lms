@@ -12,7 +12,10 @@ it('renders successfully', function () {
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertStatus(200);
 });
 
@@ -101,4 +104,49 @@ it('shows the list of episodes in ascending order', function() {
             'Second Episode',
             'Third Episode'
         ]);
+});
+
+it('redirect to next episode after video ends', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory(2)->state(new Sequence(
+            ['overview' => 'First episode overview', 'sort' => 1],
+            ['overview' => 'Second episode overview', 'sort' => 2],
+        )), 'episodes')
+        ->create();
+
+    Livewire::test(WatchEpisode::class, ['course' => $course])
+        ->assertOk()
+        ->assertSeeText('First episode overview')
+        ->dispatch('episode-ended', $course->episodes->first()->getRouteKey())
+        ->assertSeeText('Second episode overview');
+});
+
+it('stays in the the last episode after video ends', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory(2)->state(new Sequence(
+            ['overview' => 'First episode overview', 'sort' => 1],
+            ['overview' => 'Second episode overview', 'sort' => 2],
+        )), 'episodes')
+        ->create();
+
+    Livewire::test(WatchEpisode::class, ['course' => $course, 'episode' => $course->episodes->last()->getRouteKey()])
+        ->assertOk()
+        ->dispatch('episode-ended', $course->episodes->last()->getRouteKey())
+        ->assertSeeText('Second episode overview');
+});
+
+it('forbids showing episodes toq users that do not own course', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->create();
+    $user = User::factory()->create();
+    $stranger = User::factory()->create();
+
+    $user->courses()->attach($user);
+
+    Livewire::actingAs($stranger)->test(WatchEpisode::class, ['course' => $course])
+        ->assertForbidden();
 });

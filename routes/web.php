@@ -16,4 +16,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/courses/{course}', ShowCourse::class)->name('courses.show');
-Route::get('/courses/{course}/episodes/{episode?}', WatchEpisode::class)->name('courses.episodes.show');
+Route::get('/courses/{course}/episodes/{episode?}', WatchEpisode::class)
+    ->middleware(['auth'])
+    ->name('courses.episodes.show');
+
+Route::view('/', 'welcome');
+
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
+require __DIR__.'/auth.php';
