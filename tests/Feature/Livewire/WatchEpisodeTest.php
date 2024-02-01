@@ -137,7 +137,7 @@ it('stays in the the last episode after video ends', function () {
         ->assertSeeText('Second episode overview');
 });
 
-it('forbids showing episodes toq users that do not own course', function () {
+it('forbids showing episodes to users that do not own course', function () {
     $course = Course::factory()
         ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
