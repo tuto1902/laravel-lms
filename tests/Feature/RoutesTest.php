@@ -22,7 +22,10 @@ it('has a route for the watch episodes page with optional episode parameter', fu
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
     
-    actingAs(User::factory()->create());
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+    
+    actingAs($user);
 
     get(route('courses.episodes.show', ['course' => $course, 'episode' => $course->episodes->first()]))
         ->assertOk();

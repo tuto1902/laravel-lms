@@ -5,6 +5,7 @@ import forms from '@tailwindcss/forms';
 /** @type {import('tailwindcss').Config} */
 export default {
     darkMode: 'class',
+    presets: [preset],
     content: [
         './app/Filament/**/*.php',
         './app/Livewire/**/*.php',

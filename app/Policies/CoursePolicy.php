@@ -17,6 +17,6 @@ class CoursePolicy
 
     public function view(User $user, Course $course): bool
     {
-        return $user->courses->contains($course);
+        return true;
     }
 }

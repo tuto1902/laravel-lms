@@ -23,7 +23,7 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
 
     public function mount(Course $course, Episode $episode)
     {
-        $this->authorize('view', $course);
+        //$this->authorize('view', $course);
         
         $this->course = $course;
         
