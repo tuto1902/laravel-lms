@@ -67,7 +67,7 @@ class ShowCourse extends Component implements HasInfolists, HasForms
                             ->extraAttributes(['class' => 'border-none !p-0']),
                         Infolists\Components\Actions::make([
                             Infolists\Components\Actions\Action::make('watch')
-                                    ->label('Start Watching')
+                                    ->label(fn (Course $record) => auth()->user()?->courses->contains($record) ? 'Continue Watching' : 'Start Watching')
                                     ->button()
                                     ->icon('heroicon-o-play-circle')
                                     ->action(fn (Course $record) => $this->redirectRoute('courses.episodes.show', ['course' => $record]))

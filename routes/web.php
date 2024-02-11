@@ -15,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/courses/{course}', ShowCourse::class)->name('courses.show');
+Route::get('/courses/{course}', ShowCourse::class)->name('courses.show')
+    ->middleware(['auth']);
 Route::get('/courses/{course}/episodes/{episode?}', WatchEpisode::class)
-    //->middleware(['auth'])
+    ->middleware(['auth'])
     ->name('courses.episodes.show');
 
 Route::view('/', 'welcome');

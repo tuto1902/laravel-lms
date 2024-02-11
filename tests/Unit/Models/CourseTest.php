@@ -2,6 +2,7 @@
 
 use App\Models\Course;
 use App\Models\Episode;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -59,4 +60,17 @@ it('has the course length', function () {
         ->toBe('1 hr 1 min');
     expect($courseC->formatted_length)
         ->toBe('0 mins');
+});
+
+it('has many tags', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->has(Tag::factory(3), 'tags')
+        ->create();
+
+    expect($course->tags)
+        ->toBeInstanceOf(Collection::class)
+        ->toHaveLength(3)
+        ->each->toBeInstanceOf(Tag::class);
 });

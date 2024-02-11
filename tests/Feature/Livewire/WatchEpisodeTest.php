@@ -28,7 +28,9 @@ it('shows the first episode if none is provided', function () {
         )), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
         ->assertSeeText($course->episodes->first()->overview);
 });
@@ -42,7 +44,10 @@ it('shows the provided episode', function () {
         )), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course, 'episode' => $course->episodes->last()])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course, 'episode' => $course->episodes->last()])
         ->assertOk()
         ->assertSeeText('Second episode overview');
 });
@@ -62,7 +67,10 @@ it('shows the list of episodes', function() {
         )
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
         ->assertSeeInOrder([
             'First Episode',
@@ -77,7 +85,10 @@ it('shows the video player', function () {
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
         ->assertSee('<iframe src="https://player.vimeo.com/video/123456789"', false);
 });
@@ -97,7 +108,10 @@ it('shows the list of episodes in ascending order', function() {
         )
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
         ->assertSeeInOrder([
             'First Episode',
@@ -115,7 +129,10 @@ it('redirect to next episode after video ends', function () {
         )), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
         ->assertSeeText('First episode overview')
         ->dispatch('episode-ended', $course->episodes->first()->getRouteKey())
@@ -131,7 +148,10 @@ it('stays in the the last episode after video ends', function () {
         )), 'episodes')
         ->create();
 
-    Livewire::test(WatchEpisode::class, ['course' => $course, 'episode' => $course->episodes->last()->getRouteKey()])
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course, 'episode' => $course->episodes->last()->getRouteKey()])
         ->assertOk()
         ->dispatch('episode-ended', $course->episodes->last()->getRouteKey())
         ->assertSeeText('Second episode overview');
@@ -149,4 +169,49 @@ it('forbids showing episodes to users that do not own course', function () {
 
     Livewire::actingAs($stranger)->test(WatchEpisode::class, ['course' => $course])
         ->assertForbidden();
+});
+
+it('marks episode as watched after video ends', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->create();
+
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    expect($user->watchedEpisodes)
+        ->toHaveCount(0);
+    
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
+        ->assertOk()
+        ->dispatch('episode-ended', $course->episodes->first()->getRouteKey());
+    
+    $user->load('watchedEpisodes');
+
+    expect($user->watchedEpisodes)
+        ->toHaveCount(1);
+});
+
+it('marks episode as watched only once', function () {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->create();
+
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+
+    expect($user->watchedEpisodes)
+        ->toHaveCount(0);
+    
+    Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
+        ->assertOk()
+        ->dispatch('episode-ended', $course->episodes->first()->getRouteKey())
+        ->dispatch('episode-ended', $course->episodes->first()->getRouteKey());
+    
+    $user->load('watchedEpisodes');
+    
+    expect($user->watchedEpisodes)
+        ->toHaveCount(1);
 });
