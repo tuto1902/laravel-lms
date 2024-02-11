@@ -76,6 +76,10 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
     #[On('episode-ended')]
     public function onEpisodeEnded(Episode $episode)
     {
+        $user = auth()->user();
+
+        $user->watchedEpisodes()->syncWithoutDetaching([$episode->getKey()]);
+        
         $this->currentEpisode = Episode::firstWhere('sort', $episode->sort + 1) ?: $episode;
     }
 }
