@@ -20,6 +20,7 @@
     </head>
 
     <body class="antialiased bg-gray-100">
+        <livewire:layout.navigation />
         <main class="w-full md:max-w-3xl lg:max-w-6xl mx-auto px-4 pt-6">
             {{ $slot }}
         </main>

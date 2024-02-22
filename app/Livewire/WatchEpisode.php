@@ -63,8 +63,13 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
                         Infolists\Components\TextEntry::make('formatted_length')
                             ->hiddenLabel()
                             ->icon('heroicon-o-clock'),
+                        Infolists\Components\IconEntry::make('title')
+                            ->hiddenLabel()
+                            ->icon('heroicon-s-check-circle')
+                            ->color('success')
+                            ->visible(fn (Episode $record):bool => auth()->user()->watchedEpisodes->contains($record))
                     ])
-                    ->columns(2),
+                    ->columns(3),
             ]);
     }
 
