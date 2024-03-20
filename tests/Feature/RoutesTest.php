@@ -45,3 +45,8 @@ it('it only shows episodes to authenticated users', function () {
     get(route('courses.episodes.show', ['course' => $course]))
         ->assertRedirect(route('login'));
 });
+
+it('has a route for the course list', function () {
+    get(route('courses.index'))
+        ->assertOk();
+});
