@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\CourseList;
 use App\Livewire\ShowCourse;
 use App\Livewire\WatchEpisode;
 use Illuminate\Support\Facades\Route;
@@ -20,6 +21,8 @@ Route::get('/courses/{course}', ShowCourse::class)->name('courses.show')
 Route::get('/courses/{course}/episodes/{episode?}', WatchEpisode::class)
     ->middleware(['auth'])
     ->name('courses.episodes.show');
+
+Route::get('/courses', CourseList::class)->name('courses.index');
 
 Route::view('/', 'welcome');
 

@@ -132,11 +132,12 @@ it('redirect to next episode after video ends', function () {
     $user = User::factory()->create();
     $user->courses()->attach($course);
 
+    $nextEpisode = $course->episodes->last();
+
     Livewire::actingAs($user)->test(WatchEpisode::class, ['course' => $course])
         ->assertOk()
-        ->assertSeeText('First episode overview')
         ->dispatch('episode-ended', $course->episodes->first()->getRouteKey())
-        ->assertSeeText('Second episode overview');
+        ->assertRedirect("/courses/{$course->getRouteKey()}/episodes/{$nextEpisode->getRouteKey()}");
 });
 
 it('stays in the the last episode after video ends', function () {

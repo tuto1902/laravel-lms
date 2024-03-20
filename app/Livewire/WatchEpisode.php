@@ -85,6 +85,8 @@ class WatchEpisode extends Component implements HasInfolists, HasForms
 
         $user->watchedEpisodes()->syncWithoutDetaching([$episode->getKey()]);
         
-        $this->currentEpisode = Episode::firstWhere('sort', $episode->sort + 1) ?: $episode;
+        $nextEpisode = Episode::firstWhere('sort', $episode->sort + 1) ?: $episode;
+        
+        $this->redirectRoute('courses.episodes.show', ['course' => $this->course, 'episode' => $nextEpisode]);
     }
 }
