@@ -14,6 +14,10 @@ class Course extends Model
 {
     use HasFactory;
 
+    protected $withCount = [
+        'episodes'
+    ];
+
     public function instructor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'instructor_id');
