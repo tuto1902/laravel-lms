@@ -3,6 +3,7 @@
 use App\Livewire\CourseList;
 use App\Models\Course;
 use App\Models\Episode;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
@@ -28,4 +29,28 @@ it('shows a list of all courses', function() {
             'Course B',
             'Course C'
         );
+});
+
+it('shows the course tags', function() {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->has(
+            Tag::factory()
+                ->count(2)
+                ->state(new Sequence(
+                    ['name' => 'Bootstrap'],
+                    ['name' => 'AlpineJS'],
+                ))
+        )
+        ->create();
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
+    
+    Livewire::test(CourseList::class)
+        ->assertOk()
+        ->assertSeeText([
+            'Bootstrap',
+            'AlpineJS'
+        ]);
 });

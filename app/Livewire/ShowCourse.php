@@ -36,6 +36,9 @@ class ShowCourse extends Component implements HasInfolists, HasForms
             ->schema([
                 Infolists\Components\Section::make()
                     ->schema([
+                        InfoLists\Components\TextEntry::make('tags.name')
+                            ->hiddenLabel()
+                            ->badge(),
                         Infolists\Components\TextEntry::make('title')
                             ->hiddenLabel()
                             ->size('text-4xl')

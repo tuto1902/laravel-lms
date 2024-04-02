@@ -47,6 +47,6 @@ it('it only shows episodes to authenticated users', function () {
 });
 
 it('has a route for the course list', function () {
-    get(route('courses.index'))
+    get(route('courses'))
         ->assertOk();
 });
