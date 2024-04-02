@@ -3,6 +3,7 @@
 use App\Livewire\ShowCourse;
 use App\Models\Course;
 use App\Models\Episode;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 use Livewire\Livewire;
@@ -89,13 +90,26 @@ it('shows the continue watching action', function () {
         ->assertSee('Continue Watching');
 });
 
-// it('redirects to the course when calling the watch action', function () {
-//     $course = Course::factory()
-//         ->for(User::factory()->instructor(), 'instructor')
-//         ->has(Episode::factory())
-//         ->create();
+it('shows the course tags', function() {
+    $course = Course::factory()
+        ->for(User::factory()->instructor(), 'instructor')
+        ->has(Episode::factory())
+        ->has(
+            Tag::factory()
+                ->count(2)
+                ->state(new Sequence(
+                    ['name' => 'Laravel'],
+                    ['name' => 'Filament'],
+                ))
+        )
+        ->create();
+    $user = User::factory()->create();
+    $user->courses()->attach($course);
     
-//     Livewire::test(ShowCourse::class, ['course' => $course])
-//         ->callInfolistAction(component:'action', name: 'watch', infolistName: 'courseInfolist')
-//         ->assertRedirect(route('courses.episodes.show', ['course' => $course]));
-// });
+    Livewire::actingAs($user)->test(ShowCourse::class, ['course' => $course])
+        ->assertOk()
+        ->assertSeeText([
+            'Laravel',
+            'Filament'
+        ]);
+});

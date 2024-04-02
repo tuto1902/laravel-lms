@@ -30,13 +30,15 @@ class CourseList extends Component implements HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Course::query())
+            ->query(Course::query()->withCount('episodes'))
             ->contentGrid([
                 'md' => 2,
                 'lg' => 3
             ])
             ->columns([
                 Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\TextColumn::make('tags.name')
+                        ->badge(),
                     Tables\Columns\TextColumn::make('title')
                         ->weight('font-bold')
                         ->color('gray'),
@@ -44,21 +46,15 @@ class CourseList extends Component implements HasForms, HasTable
                         ->size('text-xs')
                         ->color('gray'),
                     Tables\Columns\Layout\Split::make([
-                        Tables\Columns\IconColumn::make('episodes_count')
-                            ->icon('heroicon-o-film')
-                            ->size('w-4 h-4')
-                            ->grow(false),
                         Tables\Columns\TextColumn::make('episodes_count')
                             ->formatStateUsing(fn ($state) => $state . ' ' . Str::plural('episode', $state))
                             ->size('text-[0.7rem]')
-                            ->color('gray'),
-                        Tables\Columns\IconColumn::make('formatted_length')
-                            ->icon('heroicon-o-clock')
-                            ->size('w-4 h-4')
-                            ->grow(false),
+                            ->color('gray')
+                            ->icon('heroicon-o-film'),
                         Tables\Columns\TextColumn::make('formatted_length')
                             ->size('text-[0.7rem]')
-                            ->color('gray'),
+                            ->color('gray')
+                            ->icon('heroicon-o-clock'),
                     ])
                 ])->space(3)
             ])
@@ -68,6 +64,7 @@ class CourseList extends Component implements HasForms, HasTable
                     ->button()
                     ->icon('heroicon-o-play-circle')
                     ->iconPosition(IconPosition::After)
+                    ->extraAttributes(['class' => 'w-full'])
             ]);
     }
 
