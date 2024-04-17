@@ -37,7 +37,7 @@ new class extends Component
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
+            <div class="hidden sm:flex sm:items-center sm:ms-6 sm:gap-2">
                 @auth
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -68,10 +68,13 @@ new class extends Component
                 @endauth
 
                 @guest
-                <x-primary-button>
-                    Sign In
-                </x-primary-button>
+                <x-nav-link :href="route('login')">Sign In</x-nav-link>
                 @endguest
+                
+                <a href="{{ route('pricing') }}" wire:navigate class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" >
+                    Join Premium
+                </a>
+                
             </div>
 
             <!-- Hamburger -->
@@ -117,11 +120,21 @@ new class extends Component
         </div>
         @endauth
 
-        @guest
-        <x-primary-button>
-            Sign In
-        </x-primary-button>
-        @endguest
+        <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+            <div class="mt-3 space-y-1">
+                @guest
+                <x-responsive-nav-link :href="route('login')" wire:navigate>
+                    {{ __('Sign In') }}
+                </x-responsive-nav-link>
+                @endguest
+
+                <div class="p-2">
+                <a href="{{ route('pricing') }}" wire:navigate class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" >
+                    Join Premium
+                </a>
+                </div>
+            </div>
+        </div>
         
     </div>
 </nav>

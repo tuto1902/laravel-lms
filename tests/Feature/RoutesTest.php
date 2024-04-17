@@ -50,3 +50,8 @@ it('has a route for the course list', function () {
     get(route('courses'))
         ->assertOk();
 });
+
+it('has a route for the pricing plans', function () {
+    get('pricing')
+        ->assertOk();
+});
