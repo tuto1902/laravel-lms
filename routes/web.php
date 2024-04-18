@@ -25,6 +25,7 @@ Route::get('/courses/{course}', ShowCourse::class)->name('courses.show');
 
 Route::get('/pricing', Pricing::class)->name('pricing');
 Route::get('/billing', BillingController::class)->name('billing');
+Route::get('/checkout/success', CheckoutController::class)->name('checkout.success');
 
 Route::get('/courses/{course}/episodes/{episode?}', WatchEpisode::class)
     ->middleware(['auth'])

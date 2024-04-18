@@ -3,6 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, Billable;
 
@@ -43,7 +46,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'is_instructor' => 'boolean'
+        'is_instructor' => 'boolean',
+        'is_lifetime_member' => 'boolean',
     ];
 
     public function courses(): BelongsToMany
@@ -54,5 +58,15 @@ class User extends Authenticatable
     public function watchedEpisodes(): BelongsToMany
     {
         return $this->belongsToMany(Episode::class);
+    }
+
+    public function isLifetimeMember(): bool
+    {
+        return $this->is_lifetime_member ?? false;
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }

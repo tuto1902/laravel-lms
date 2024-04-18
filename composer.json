@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "filament/filament": "^3.2",
         "filament/infolists": "^3.0-stable",
         "filament/tables": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
