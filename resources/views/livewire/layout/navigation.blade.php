@@ -57,6 +57,12 @@ new class extends Component
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        @if(auth()->user()->subscribed(config('stripe.product')))
+                        <x-dropdown-link :href="route('billing')">
+                            {{ __('Billing') }}
+                        </x-dropdown-link>
+                        @endif
+
                         <!-- Authentication -->
                         <button wire:click="logout" class="w-full text-start">
                             <x-dropdown-link>
@@ -71,9 +77,11 @@ new class extends Component
                 <x-nav-link :href="route('login')">Sign In</x-nav-link>
                 @endguest
                 
+                @if(! auth()->user()->isLifetimeMember())
                 <a href="{{ route('pricing') }}" wire:navigate class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" >
                     Join Premium
                 </a>
+                @endif
                 
             </div>
 
@@ -110,6 +118,12 @@ new class extends Component
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
 
+                @if(auth()->user()->subscribed(config('stripe.product')))
+                <x-responsive-nav-link :href="route('billing')">
+                    {{ __('Billing') }}
+                </x-responsive-nav-link>
+                @endif
+
                 <!-- Authentication -->
                 <button wire:click="logout" class="w-full text-start">
                     <x-responsive-nav-link>
@@ -128,11 +142,13 @@ new class extends Component
                 </x-responsive-nav-link>
                 @endguest
 
+                @if(! auth()->user()->isLifetimeMember())
                 <div class="p-2">
-                <a href="{{ route('pricing') }}" wire:navigate class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" >
-                    Join Premium
-                </a>
+                    <a href="{{ route('pricing') }}" wire:navigate class="cursor-pointer inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150" >
+                        Join Premium
+                    </a>
                 </div>
+                @endif
             </div>
         </div>
         
