@@ -18,18 +18,36 @@ class EpisodesRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('vimeo_id')
+                    ->label('Vimeo ID')
+                    ->required(),
+                Forms\Components\TextInput::make('length_in_minutes')
+                    ->suffix('Minutes')
+                    ->numeric()
+                    ->hint('Video lenght in minutes')
+                    ->required(),
                 Forms\Components\TextInput::make('title')
+                    ->required(),
+                Forms\Components\Textarea::make('overview')
                     ->required()
-                    ->maxLength(255),
+                    ->columnSpanFull()
             ]);
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->reorderable('sort')
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
+                Tables\Columns\TextColumn::make('vimeo_id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable()
+                    ->sortable()
+                    ->grow(),
+                Tables\Columns\TextColumn::make('formatted_length')
+                    ->sortable(),
             ])
             ->filters([
                 //

@@ -3,6 +3,7 @@
 use App\Filament\Resources\CourseResource;
 use App\Models\Course;
 use App\Models\Episode;
+use App\Models\Tag;
 use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteAction as TableDeleteAction;
@@ -13,7 +14,7 @@ use function Pest\Laravel\assertModelMissing;
 use function Pest\Laravel\get;
 
 beforeEach(function () {
-    actingAs(User::factory()->instructor()->create());
+    actingAs(User::factory()->state(['email' => 'arturo@example.com'])->create());
 });
 
 it('renders the resource page', function () {   
@@ -23,7 +24,6 @@ it('renders the resource page', function () {
 
 it('can list courses', function () {
     $courses = Course::factory(3)
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
         ->create();
 
@@ -38,8 +38,8 @@ it('renders the create page', function () {
 
 it('can create a course', function () {
     $newCourse = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
+        ->has(Tag::factory(3))
         ->make();
 
     Livewire::test(CourseResource\Pages\CreateCourse::class)
@@ -47,7 +47,7 @@ it('can create a course', function () {
             'title' => $newCourse->title,
             'description' => $newCourse->description,
             'tagline' => $newCourse->tagline,
-            'instructor_id' => $newCourse->instructor->getKey()
+            'tags' => json_encode($newCourse->tags)
         ])
         ->call('create')
         ->assertHasNoFormErrors();
@@ -56,13 +56,11 @@ it('can create a course', function () {
         'title' => $newCourse->title,
         'description' => $newCourse->description,
         'tagline' => $newCourse->tagline,
-        'instructor_id' => $newCourse->instructor->getKey()
     ]);
 });
 
 it('renders the edit page', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
         ->create();
 
@@ -72,13 +70,13 @@ it('renders the edit page', function () {
 
 it('can update a course', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
+        ->has(Tag::factory(3))
         ->create();
 
     $newCourse = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
+        ->has(Tag::factory(3))
         ->make();
  
     Livewire::test(CourseResource\Pages\EditCourse::class, [
@@ -88,7 +86,7 @@ it('can update a course', function () {
         'title' => $newCourse->title,
         'description' => $newCourse->description,
         'tagline' => $newCourse->tagline,
-        'instructor_id' => $newCourse->instructor->getKey()
+        'tags' => json_encode($newCourse->tags)
     ])
     ->call('save')
     ->assertHasNoFormErrors();
@@ -96,13 +94,11 @@ it('can update a course', function () {
     expect($course->refresh())
         ->title->toBe($newCourse->title)
         ->description->toBe($newCourse->description)
-        ->tagline->toBe($newCourse->tagline)
-        ->instructor_id->toBe($newCourse->instructor_id);
+        ->tagline->toBe($newCourse->tagline);
 });
 
 it('can delete a course from the edit page', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
         ->create();
  
@@ -116,7 +112,6 @@ it('can delete a course from the edit page', function () {
 
 it('can delete a course from the list page', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
         ->create();
  
@@ -128,7 +123,6 @@ it('can delete a course from the list page', function () {
 
 it('can render episodes relation manager', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(3), 'episodes')
         ->create();
  

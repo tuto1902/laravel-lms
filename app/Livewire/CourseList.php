@@ -38,8 +38,10 @@ class CourseList extends Component implements HasForms, HasTable
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\TextColumn::make('tags.name')
+                        ->searchable()
                         ->badge(),
                     Tables\Columns\TextColumn::make('title')
+                        ->searchable()
                         ->weight('font-bold')
                         ->color('gray'),
                     Tables\Columns\TextColumn::make('tagline')

@@ -25,10 +25,6 @@ class DatabaseSeeder extends Seeder
                 'tagline' => 'Start creating your own Admin Panels today!',
                 'description' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Blanditiis delectus eius commodi, ducimus est earum eos eligendi quaerat asperiores et ipsam molestias animi incidunt? Voluptas, ut! Deserunt amet libero possimus.'
             ])
-            ->for(User::factory()->state([
-                'name' => 'Instructor',
-                'email' => 'instructor@example.com'
-            ])->instructor(), 'instructor')
             ->has(Episode::factory(3)->state(new Sequence(
                 [
                     'title' => 'Introduction',

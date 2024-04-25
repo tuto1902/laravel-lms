@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('tagline');
             $table->string('description');
-            $table->foreignIdFor(User::class, 'instructor_id');
             $table->timestamps();
         });
     }

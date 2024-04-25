@@ -28,13 +28,18 @@ class CourseResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('tagline')
                     ->required(),
-                Forms\Components\TextInput::make('description')
-                    ->required(),
-                Forms\Components\Select::make('instructor_id')
-                    ->relationship(name: 'instructor', titleAttribute: 'name')
-                    ->searchable()
-                    ->preload()
+                Forms\Components\Select::make('tags')
                     ->required()
+                    ->multiple()
+                    ->relationship(name: 'tags', titleAttribute: 'name')
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required()
+                    ]),
+                Forms\Components\Textarea::make('description')
+                    ->columnSpanFull()
+                    ->required(),
             ]);
     }
 
@@ -42,7 +47,12 @@ class CourseResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('title')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('tags.name')
+                    ->badge()
+                    ->searchable()
             ])
             ->filters([
                 //

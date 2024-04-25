@@ -10,7 +10,6 @@ use Livewire\Livewire;
 
 it('renders successfully', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['length_in_minutes' => 10])->count(10), 'episodes')
         ->create();
     
@@ -23,7 +22,6 @@ it('renders successfully', function () {
 it('shows course details', function () {
     // Arrange
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['length_in_minutes' => 10])->count(10), 'episodes')
         ->create();
 
@@ -35,7 +33,6 @@ it('shows course details', function () {
         ->assertSeeText($course->title)
         ->assertSeeText($course->tagline)
         ->assertSeeText($course->description)
-        ->assertSeeText($course->instructor->name)
         ->assertSeeText($course->created_at->diffForHumans())
         ->assertSeeText($course->episodes_count . ' episodes')
         ->assertSeeText($course->formatted_length);
@@ -44,7 +41,6 @@ it('shows course details', function () {
 it('shows the episode list', function () {
     // Arrange
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(
             Episode::factory()
                 ->count(3)
@@ -70,7 +66,6 @@ it('shows the episode list', function () {
 
 it('shows the start watching action', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->create();
     
@@ -80,7 +75,6 @@ it('shows the start watching action', function () {
 
 it('shows the continue watching action', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->create();
     $user = User::factory()->create();
@@ -92,7 +86,6 @@ it('shows the continue watching action', function () {
 
 it('shows the course tags', function() {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->has(
             Tag::factory()

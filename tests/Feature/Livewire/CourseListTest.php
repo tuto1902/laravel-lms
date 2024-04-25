@@ -19,7 +19,6 @@ it('shows a list of all courses', function() {
             ['title' => 'Course B'],
             ['title' => 'Course C'],
         ))
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['length_in_minutes' => 10]), 'episodes')
         ->create();
 
@@ -33,7 +32,6 @@ it('shows a list of all courses', function() {
 
 it('shows the course tags', function() {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->has(
             Tag::factory()
