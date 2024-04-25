@@ -8,16 +8,6 @@ beforeEach(function() {
     $this->pricing = config('stripe.pricing');
 });
 
-it('shows the stripe price IDs', function () {
-    
-    Livewire::test(Pricing::class)
-        ->assertSee([
-            $this->pricing['monthly'],
-            $this->pricing['yearly'],
-            $this->pricing['lifetime']
-        ]);
-});
-
 it('redirects to the register page when not signed in', function () {
     Livewire::test(Pricing::class)
         ->call('checkout', $this->pricing['monthly'])

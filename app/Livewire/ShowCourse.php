@@ -47,9 +47,6 @@ class ShowCourse extends Component implements HasInfolists, HasForms
                         Infolists\Components\TextEntry::make('tagline')
                             ->hiddenLabel()
                             ->columnSpanFull(),
-                        Infolists\Components\TextEntry::make('instructor.name')
-                            ->label('Your teacher')
-                            ->columnSpanFull(),
                         Infolists\Components\Fieldset::make('')
                             ->columns(3)
                             ->columnSpan(1)

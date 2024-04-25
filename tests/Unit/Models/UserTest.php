@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 it('has many courses', function () {
     $user = User::factory()->create();
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->create();
 
     $user->courses()->attach($course);
@@ -23,7 +22,6 @@ it('has many courses', function () {
 it('has many watched episodes', function () {
     $user = User::factory()->create();
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->create();
     $episode = Episode::factory()->for($course)->create();
 

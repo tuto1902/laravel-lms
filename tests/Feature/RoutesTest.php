@@ -9,7 +9,6 @@ use function Pest\Laravel\get;
 
 it('has a route for the course details page', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->create();
     
     actingAs(User::factory()->create());
@@ -20,7 +19,6 @@ it('has a route for the course details page', function () {
 
 it('has a route for the watch episodes page with optional episode parameter', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
     
@@ -38,7 +36,6 @@ it('has a route for the watch episodes page with optional episode parameter', fu
 
 it('it only shows episodes to authenticated users', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(), 'episodes')
         ->create();
 

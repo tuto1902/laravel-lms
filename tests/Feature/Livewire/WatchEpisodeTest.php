@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Factories\Sequence;
 
 it('renders successfully', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
 
@@ -21,7 +20,6 @@ it('renders successfully', function () {
 
 it('shows the first episode if none is provided', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(2)->state(new Sequence(
             ['overview' => 'First episode overview'],
             ['overview' => 'Second episode overview'],
@@ -37,7 +35,6 @@ it('shows the first episode if none is provided', function () {
 
 it('shows the provided episode', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(2)->state(new Sequence(
             ['overview' => 'First episode overview', 'sort' => 1],
             ['overview' => 'Second episode overview', 'sort' => 2],
@@ -55,7 +52,6 @@ it('shows the provided episode', function () {
 it('shows the list of episodes', function() {
     // Arrange
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(
             Episode::factory()
                 ->count(3)
@@ -81,7 +77,6 @@ it('shows the list of episodes', function() {
 
 it('shows the video player', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['vimeo_id' => '123456789']), 'episodes')
         ->create();
 
@@ -96,7 +91,6 @@ it('shows the video player', function () {
 it('shows the list of episodes in ascending order', function() {
     // Arrange
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(
             Episode::factory()
                 ->count(3)
@@ -122,7 +116,6 @@ it('shows the list of episodes in ascending order', function() {
 
 it('redirect to next episode after video ends', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(2)->state(new Sequence(
             ['overview' => 'First episode overview', 'sort' => 1],
             ['overview' => 'Second episode overview', 'sort' => 2],
@@ -142,7 +135,6 @@ it('redirect to next episode after video ends', function () {
 
 it('stays in the the last episode after video ends', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory(2)->state(new Sequence(
             ['overview' => 'First episode overview', 'sort' => 1],
             ['overview' => 'Second episode overview', 'sort' => 2],
@@ -160,7 +152,6 @@ it('stays in the the last episode after video ends', function () {
 
 it('forbids showing episodes to users that do not own course', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->create();
     $user = User::factory()->create();
@@ -174,7 +165,6 @@ it('forbids showing episodes to users that do not own course', function () {
 
 it('marks episode as watched after video ends', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->create();
 
@@ -196,7 +186,6 @@ it('marks episode as watched after video ends', function () {
 
 it('marks episode as watched only once', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->create();
 

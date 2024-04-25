@@ -6,19 +6,8 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
-it('belongs to an instructor', function () {
-    $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
-        ->create();
-
-    expect($course->instructor)
-        ->toBeInstanceOf(User::class)
-        ->is_instructor->toBeTrue();
-});
-
 it('has many episodes', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->count(10), 'episodes')
         ->create();
 
@@ -30,7 +19,6 @@ it('has many episodes', function () {
 
 it('has the episodes count', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->count(10), 'episodes')
         ->create();
     
@@ -41,17 +29,14 @@ it('has the episodes count', function () {
 
 it('has the course length', function () {
     $courseA = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['length_in_minutes' => 150]), 'episodes')
         ->create();
 
     $courseB = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory()->state(['length_in_minutes' => 61]), 'episodes')
         ->create();
 
     $courseC = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->create();
 
     expect($courseA->formatted_length)
@@ -64,7 +49,6 @@ it('has the course length', function () {
 
 it('has many tags', function () {
     $course = Course::factory()
-        ->for(User::factory()->instructor(), 'instructor')
         ->has(Episode::factory())
         ->has(Tag::factory(3), 'tags')
         ->create();
