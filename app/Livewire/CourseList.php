@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Course;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Support\Enums\IconPosition;
@@ -35,6 +36,12 @@ class CourseList extends Component implements HasForms, HasTable
                 'md' => 2,
                 'lg' => 3
             ])
+            ->filters([
+                Tables\Filters\SelectFilter::make('tags')
+                    ->multiple()->preload()
+                    ->searchable()
+                    ->relationship('tags','name')
+            ],layout: Tables\Enums\FiltersLayout::AboveContent)
             ->columns([
                 Tables\Columns\Layout\Stack::make([
                     Tables\Columns\TextColumn::make('tags.name')

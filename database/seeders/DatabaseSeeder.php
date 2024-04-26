@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
-        $course = Course::factory()
+        $course = Course::factory(10)
             ->state([
                 'title' => 'Filament Bootcamp',
                 'tagline' => 'Start creating your own Admin Panels today!',
@@ -51,10 +51,10 @@ class DatabaseSeeder extends Seeder
             ->has(
                 Tag::factory()
                     ->count(2)
-                    ->state(new Sequence(
-                        ['name' => 'Laravel'],
-                        ['name' => 'Filament'],
-                    ))
+//                    ->state(new Sequence(
+//                        ['name' => 'Laravel'],
+//                        ['name' => 'Filament'],
+//                    ))
             )
         ->create();
 

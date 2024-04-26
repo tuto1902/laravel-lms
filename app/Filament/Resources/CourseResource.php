@@ -55,8 +55,11 @@ class CourseResource extends Resource
                     ->searchable()
             ])
             ->filters([
-                //
-            ])
+                Tables\Filters\SelectFilter::make('tags')
+                    ->multiple()->preload()
+                    ->searchable()
+                    ->relationship('tags','name')
+            ],layout: Tables\Enums\FiltersLayout::Modal)
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
