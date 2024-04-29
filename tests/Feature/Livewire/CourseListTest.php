@@ -44,7 +44,7 @@ it('shows the course tags', function() {
         ->create();
     $user = User::factory()->create();
     $user->courses()->attach($course);
-    
+
     Livewire::test(CourseList::class)
         ->assertOk()
         ->assertSeeText([
@@ -52,3 +52,33 @@ it('shows the course tags', function() {
             'AlpineJS'
         ]);
 });
+
+it('can be filter with tags name', function () {
+
+    $filament = Course::factory()
+        ->has(Episode::factory())
+        ->has(Tag::factory()->count(2))
+        ->create();
+
+     $course = Course::factory()
+        ->has(Episode::factory())
+        ->has(
+            Tag::factory()
+                ->state(new Sequence(
+                    ['name' => 'Vue'],
+                ))
+        )
+        ->create();
+
+
+    Livewire::test(CourseList::class)
+        ->assertOk()
+        ->assertCanSeeTableRecords(Course::get())
+        ->filterTable('tags',$course->tags()->pluck('tag_id')->toArray())
+        ->assertCanSeeTableRecords(Course::whereRelation('tags','tag_id',$course->tags->first()->id)->get())
+        ->assertCanNotSeeTableRecords(Course::whereRelation('tags','tag_id','<>',$course->tags->first()->id)->get());
+
+});
+
+
+
