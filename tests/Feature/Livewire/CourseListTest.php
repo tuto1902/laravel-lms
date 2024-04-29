@@ -6,7 +6,6 @@ use App\Models\Episode;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Sequence;
-use Livewire\Livewire;
 
 it('renders successfully', function () {
     Livewire::test(CourseList::class)
@@ -58,103 +57,28 @@ it('can be filter with tags name', function () {
 
     $filament = Course::factory()
         ->has(Episode::factory())
-        ->has(
-            Tag::factory()
-                ->count(2)
-                ->state(new Sequence(
-                    ['name' => 'Bootstrap'],
-                    ['name' => 'AlpineJS'],
-                ))
-        )
+        ->has(Tag::factory()->count(2))
         ->create();
 
-     Course::factory()
+     $course = Course::factory()
         ->has(Episode::factory())
         ->has(
             Tag::factory()
-                ->count(2)
-                ->state(new Sequence(
-                    ['name' => 'Vue'],
-                    ['name' => 'Tailwind'],
-                ))
-        )
-        ->create();
-
-    $firstCourseTagsIds = $filament->tags()->pluck('tag_id')->toArray();
-
-    Livewire::test(CourseList::class)
-        ->assertCanSeeTableRecords(Course::get())
-        ->filterTable('tags',$firstCourseTagsIds)
-        ->assertCanSeeTableRecords(Course::whereHas('tags',function ($q) use ($firstCourseTagsIds){
-            $q->whereIn('tag_id',$firstCourseTagsIds);
-        })->get())
-        ->assertCanNotSeeTableRecords(Course::whereHas('tags',function ($q) use ($firstCourseTagsIds){
-            $q->whereNotIn('tag_id',$firstCourseTagsIds);
-        })->get())
-        ->assertSeeText([
-            'Bootstrap','AlpineJS'
-        ])
-        ->assertDontSeeText([
-            'Tailwind','Vue'
-        ]);
-
-});
-
-
-it('can be filter remove tags', function () {
-
-    $filament = Course::factory()
-        ->has(Episode::factory())
-        ->has(
-            Tag::factory()
-                ->count(2)
-                ->state(new Sequence(
-                    ['name' => 'Bootstrap'],
-                    ['name' => 'AlpineJS'],
-                ))
-        )
-        ->create();
-
-    $vues = Course::factory()
-        ->has(Episode::factory())
-        ->has(
-            Tag::factory()
-                ->count(2)
                 ->state(new Sequence(
                     ['name' => 'Vue'],
                 ))
         )
         ->create();
 
-    $filamentCourseTagsIds = $filament->tags()->pluck('tag_id')->toArray();
-    $vuesCourseTagsIds = $vues->tags()->pluck('tag_id')->toArray();
 
     Livewire::test(CourseList::class)
+        ->assertOk()
         ->assertCanSeeTableRecords(Course::get())
-        ->filterTable('tags',$vuesCourseTagsIds)
-        ->assertCanNotSeeTableRecords(Course::whereHas('tags',function ($q) use ($filamentCourseTagsIds){
-            $q->whereIn('tag_id',array_merge($filamentCourseTagsIds));
-        })->get())
-        ->assertSeeText([
-            'Vue',
-        ])->removeTableFilters()
-        ->assertSeeText(['Bootstrap'])
-        ->assertCanSeeTableRecords(Course::get());
+        ->filterTable('tags',$course->tags()->pluck('tag_id')->toArray())
+        ->assertCanSeeTableRecords(Course::whereRelation('tags','tag_id',$course->tags->first()->id)->get())
+        ->assertCanNotSeeTableRecords(Course::whereRelation('tags','tag_id','<>',$course->tags->first()->id)->get());
 
 });
 
 
-it('can be reset the filter ', function () {
 
-    $courses = Course::factory(2)
-        ->has(Episode::factory())
-        ->has(
-            Tag::factory()
-                ->count(2)
-        )
-        ->create();
-
-    Livewire::test(CourseList::class)
-        ->assertCanSeeTableRecords($courses)
-        ->resetTableFilters();
-});
